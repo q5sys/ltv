@@ -6,31 +6,30 @@
 
 ltv::ltv(QWidget *parent) : QMainWindow(parent), ui(new Ui::ltv){
   ui->setupUi(this);
+  ui->splitter_V->setStretchFactor(0, 1);
+  ui->splitter_V->setStretchFactor(1, 2);
 
   // ~~ Dir Window ~~ //
   dirModel = new QFileSystemModel(this);
   dirModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs); // set filter
   dirModel->setRootPath(QDir::rootPath()); // set root path
   ui->dirview->setModel(dirModel); // link to the ui
-  // ui->dirview->setRootIndex(dirModel->setRootPath(QDir::homePath())); // for home dir only
+  ui->dirview->setRootIndex(dirModel->index(QDir::rootPath())); // for home dir only
 
   // ~~ File Window ~~ //
   fileModel = new QFileSystemModel(this);
-  //fileInfoList = dir.entryInfoList(filters, QDir::Files|QDir::NoDotAndDotDot);
-  fileModel->setFilter(QDir::Files); // set initial filter
+  fileModel->setFilter(QDir::NoDotAndDotDot | QDir::Files); // set initial filter
   QStringList filters;
-  filters << "*.png" << "*.jpg" << "*.bmp";
+  filters << "*.txt" << "*.sh" << "*.md"<< "*.pro" << "*.cpp" << "*.h" << "*.conf";
+  qDebug() << filters;
   fileModel->setNameFilters(filters); // set more filters
-  fileModel->setRootPath(QDir::homePath()); // set root path
+  fileModel->setNameFilterDisables(false);
+  fileModel->setRootPath(QDir::currentPath());
   ui->fileview->setModel(fileModel); // link to the ui
-  ui->fileview->setColumnHidden(2, true);
-  ui->fileview->setColumnHidden(3, true);
-
-  // ui->fileview->setRootIndex(fileModel->setRootPath(QDir::homePath())); // for home dir only
+  connect(ui->fileview->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(on_fileview_clicked(const QModelIndex&)) );
 
   // set the UI to look the way we want
   ui->dirview->setHeaderHidden(true);
-  //ui->fileview->setHeaderHidden(true);
   ui->dirview->resizeColumnToContents(0);
   ui->dirview->setColumnHidden(1, true);
   ui->dirview->setColumnHidden(2, true);
