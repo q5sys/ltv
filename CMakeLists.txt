@@ -15,11 +15,9 @@ find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 # Add the source files to the executable
 add_executable(ltv
     main.cpp
-    mainwindow.cpp
-    imageviewer.cpp
-    filesearcher.cpp
-    mainwindow.ui
-    imageviewer.ui
+    ltv.cpp
+    ltv.h
+    ltv.ui
 )
 
 # Link the required Qt libraries to the executable
